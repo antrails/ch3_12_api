@@ -180,4 +180,77 @@ def getItem(request,id):
     except:
         return JsonResponse({"error":"Item not found"},status=404)
 
+
+
+from django.views.decorators.csrf import csrf_exempt
+#停止csrf驗證 讓外部程式也可以呼叫這個api
+@csrf_exempt    
+def createItem(request):
+    try:
+        if request.method == "GET":
+            cname = request.GET['cname']
+            csex  = request.GET['csex']
+            cbirthday = request.GET['cbirthday']
+            cemail = request.GET['cemail']
+            cphone = request.GET['cphone']
+            caddr  = request.GET['caddr']
+            print(f"GET data: cname={cname},csex={csex},cbirthday={cbirthday},cemail={cemail},cphone={cphone},caddr={caddr}")
+            
+        
+        elif request.method == "POST":
+            cname = request.POST['cname']
+            csex  = request.POST['csex']
+            cbirthday = request.POST['cbirthday']
+            cemail = request.POST['cemail']
+            cphone = request.POST['cphone']
+            caddr  = request.POST['caddr']
+            print(f"POST data: cname={cname},csex={csex},cbirthday={cbirthday},cemail={cemail},cphone={cphone},caddr={caddr}")
+        try:
+            add = students(cname = cname, csex = csex,cbirthday = cbirthday,cemail = cemail,cphone=cphone,caddr=caddr)
+            add.save()
+            return JsonResponse({"message":"Item created successfully"},status=201)
+        except:
+            return JsonResponse({"error":"Item created error"},status=500)
+
+    except:
+        return JsonResponse({"error":"Invalid data"},status=400)    
     
+
+@csrf_exempt 
+def updateItem(request,id):
+    print(f"id={id}")
+    try:
+        if request.method == "GET":
+            cname = request.GET['cname']
+            csex  = request.GET['csex']
+            cbirthday = request.GET['cbirthday']
+            cemail = request.GET['cemail']
+            cphone = request.GET['cphone']
+            caddr  = request.GET['caddr']
+            print(f"GET data: cname={cname},csex={csex},cbirthday={cbirthday},cemail={cemail},cphone={cphone},caddr={caddr}")
+            
+
+
+        elif  request.method == "POST":
+            cname = request.POST['cname']
+            csex  = request.POST['csex']
+            cbirthday = request.POST['cbirthday']
+            cemail = request.POST['cemail']
+            cphone = request.POST['cphone']
+            caddr  = request.POST['caddr']
+            print(f"POST data: cname={cname},csex={csex},cbirthday={cbirthday},cemail={cemail},cphone={cphone},caddr={caddr}")
+            
+        try:
+            update = students.objects.get(cid=id)
+            update.cname = cname
+            update.csex = csex
+            update.cbirthday = cbirthday
+            update.cemail = cemail
+            update.cphone = cphone
+            update.caddr = caddr
+            update.save()
+            return JsonResponse({"message":"Item update successfully"},status=201)
+        except:
+            return JsonResponse({"error":"Item created error"},status=500)
+    except:
+        return JsonResponse({"error":"Invalid data"},status=400)
