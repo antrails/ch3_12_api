@@ -156,3 +156,28 @@ def index(request):
         'errormessage': errormessage,
         'page_obj': page_obj
     })
+
+from django.http import JsonResponse
+def getAllItems(request):
+    resultObject = students.objects.all().order_by('cid')
+    # for item in resultList:
+    #     print(type(item))
+    resultList = list(resultObject.values())
+    # print(type(resultList   ))
+    # for item in resultList:
+    #     print(type(item))
+    # return HttpResponse("Hello")
+    return JsonResponse(resultList,safe=False) #safe=True時=只允許傳入dict , False時只允許非dict
+
+def getItem(request,id):
+
+    try:
+        obj = students.objects.get(cid=id)
+        print(type(obj))  #這時候是物件 要轉成字典
+        res = model_to_dict(obj) 
+        # return HttpResponse("Hii")
+        return JsonResponse(res,safe=False)
+    except:
+        return JsonResponse({"error":"Item not found"},status=404)
+
+    
